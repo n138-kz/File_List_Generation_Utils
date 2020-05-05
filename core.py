@@ -60,9 +60,13 @@ files = glob.glob(dirpath + "/**", recursive=True)
 files.extend( glob.glob(dirpath + "/*.*", recursive=True) )
 
 # 重複排除
-files = set(files)
+files = list(files)
+
+# 並び替え
+files.sort()
 
 for file in files:
-    print(file)
+    print( file + "\t" + str( ( int( ( os.path.getsize(file) / 1000 ) * 100 ) / 100) ) + "KB" )
 
-print(len(files))
+print( "\n\n\n" )
+print( "File count: " + str( len(files) - 1 ) )
