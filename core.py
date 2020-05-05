@@ -29,6 +29,7 @@ import glob
 
 ・ファイル一覧 を取得→変数(files)
 ・DotName(［.］で始まるファイル名、サブフォルダ名) の ファイル一覧 を取得→→変数(files)
+・重複してリストに登録されているファイル名を排除
 
 ■ 変数(files) すべてに対し → 変数(file)
 ｜
@@ -57,6 +58,10 @@ files = glob.glob(dirpath + "/**", recursive=True)
 
 # .で始まるファイルをリストに追加
 files.extend( glob.glob(dirpath + "/*.*", recursive=True) )
+
+# 重複排除
+files = set(files)
+
 for file in files:
     print(file)
 
