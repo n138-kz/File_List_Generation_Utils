@@ -1,7 +1,3 @@
-import os
-import sys
-import glob
-
 # Comment out = https://note.nkmk.me/python-comment/
 # フォルダ内のファイル一覧を取得 = https://weblabo.oscasierra.net/python/python3-beginning-file-list.html
 # Pythonで文字列を連結・結合 = https://note.nkmk.me/python-string-concat/
@@ -9,7 +5,7 @@ import glob
 
 """
 
-・持出しファイル名一覧を記載したテキストファイルのファイル名(【承認依頼】データ持出し_ユーザ名_AT_ホスト名.txt)→変数(exportListFile)
+・持出しファイル名一覧を記載したテキストファイルのファイル名→変数(exportListFile)
 ・現在のフォルダのパスを取得→変数(dirpath)
 
 ▲ コマンド引数[1] に値がある とき
@@ -45,28 +41,66 @@ import glob
 ■
 
 """
+import os
+import sys
+import glob
+import datetime
+
+# 今の時間→フォーマットに変換
+runtime_start = datetime.datetime.now()
+runtime_start = runtime_start.strftime('%Y-%m-%dT%H-%M-%S')
+
+# 持出しファイルリストを記載するファイル名定義
+from socket import gethostname
+listname = '【承認依頼】データ持出し' + '_' + os.getlogin() + '_' + gethostname() + '_' + str( runtime_start ) + '.txt'
 
 # 持出しフォルダパス定義
 # デフォルト：実行フォルダ
 dirpath = os.getcwd()
 
-
-
-
 # ファイル一覧取得
-files = glob.glob(dirpath + "/**", recursive=True)
+files = glob.glob(dirpath + '/**', recursive=True)
 
 # .で始まるファイルをリストに追加
-files.extend( glob.glob(dirpath + "/*.*", recursive=True) )
+files.extend( glob.glob(dirpath + '/.**', recursive=True) )
 
 # 重複排除
-files = list(files)
+files = set(files)
 
 # 並び替え
+files = list(files)
 files.sort()
 
-for file in files:
-    print( file + "\t" + str( ( int( ( os.path.getsize(file) / 1000 ) * 100 ) / 100) ) + "KB" )
+# ファイルアクセスハンドラー
+with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHundler:
 
-print( "\n\n\n" )
+    # すべての ファイル に対し
+    for file in files:
+        # ファイル名
+        file_name = file
+
+        # ファイルサイズ 取得→ KB 形式
+        file_size = os.path.getsize(file) / 1000
+
+        # ファイルサイズ 取得→ 少数第2位まで
+        file_size = int( file_size * 100 ) / 100
+
+        # 0 正規化 / 0.00 → 0
+        if ( int(file_size) == 0 ):
+            file_size = 0
+
+        # 0.01KB 未満だけど 0 byte 以上のときは 0.01KB にする
+        if ( int(file_size)==0 ) and ( os.path.getsize(file) > 0 ):
+            file_size = 0.01
+
+        # ディレクトリ の時は ファイルサイズ を取得しない / 0 にする
+        if os.path.isdir(file):
+            file_size = 0
+
+        # KB 表記
+        file_size = str( file_size ) + 'KB'
+
+        fileAccessHundler.write( file_name + "\t" + file_size + '\n' )
+
+
 print( "File count: " + str( len(files) - 1 ) )
