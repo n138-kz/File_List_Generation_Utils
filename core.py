@@ -46,6 +46,28 @@ import sys
 import glob
 import datetime
 
+print( 'System Bootstrap, Version 1.0b, ' + '\n' )
+print( 'This program\'s licensed under the MIT License.' + '\n' + '\n' + '\n' )
+print( 'MIT License' + '\n' )
+print( 'Copyright (c) 2020 Yuu Takanashi' + '\n' )
+print( 'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:' + '\n' )
+print( 'The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.' + '\n' )
+print( 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.' + '\n' )
+
+print(
+      'Permissions' + '\n'
+    + '    Commercial use' + '\n'
+    + '    Modification' + '\n'
+    + '    Distribution' + '\n'
+    + '    Private use' + '\n'
+);
+
+print( 'Limitations' + '\n'
+    + '    Liability' + '\n'
+    + '    Warranty' + '\n'
+);
+print( '\n' + '\n' + '\n' )
+
 # 今の時間→フォーマットに変換
 runtime_start = datetime.datetime.now()
 runtime_start = runtime_start.strftime('%Y-%m-%dT%H-%M-%S')
@@ -56,18 +78,23 @@ listname = '【承認依頼】データ持出し' + '_' + os.getlogin() + '_' + 
 
 # 持出しフォルダパス定義
 # デフォルト：実行フォルダ
+print( '>chdir topdir ' + os.getcwd() + '\n')
 dirpath = os.getcwd()
 
 # ファイル一覧取得
+print( '>execute collection' + '\n' )
 files = glob.glob(dirpath + '/**', recursive=True)
 
 # .で始まるファイルをリストに追加
+print( '>execute collection dotfile' + '\n' )
 files.extend( glob.glob(dirpath + '/**/.**', recursive=True) )
 
 # 重複排除
+print( '>execute purge duplicate' + '\n' )
 files = set(files)
 
 # 並び替え
+print( '>execute resort' + '\n' )
 files = list(files)
 files.sort()
 
@@ -75,16 +102,17 @@ files.sort()
 files_summary_size = 0
 
 
+
 # ファイルアクセスハンドラー
 with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHundler:
 
     # ルートディレクトリパス取得
-    fileAccessHundler.write( '###' + ' ' + 'T/D' + ': ' + dirpath + '\n' )
     print( '>show filelist topdir ' + '\n' + dirpath + '\n')
+    fileAccessHundler.write( '###' + ' ' + 'T/D' + ': ' + dirpath + '\n' )
 
     # ファイル総数
-    fileAccessHundler.write( '###' + ' ' + 'Count' + ': ' + str( len(files) - 1 ) + '\n' )
     print( '>show filelist counts ' + '\n' + str( len(files) - 1 ) + '\n')
+    fileAccessHundler.write( '###' + ' ' + 'Count' + ': ' + str( len(files) - 1 ) + '\n' )
 
     # 空行
     fileAccessHundler.write( '\n' )
