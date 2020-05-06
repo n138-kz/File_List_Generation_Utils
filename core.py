@@ -118,7 +118,10 @@ with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHun
     fileAccessHundler.write( '\n' )
 
     # すべての ファイル に対し
-    for file in files:
+    print( '>execute export ' + '\n')
+
+    from tqdm import tqdm
+    for file in tqdm(files):
 
         # ファイル名
         file_name = file.replace(dirpath, '')
