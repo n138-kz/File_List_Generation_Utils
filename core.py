@@ -71,14 +71,27 @@ files = set(files)
 files = list(files)
 files.sort()
 
+# ファイル総容量
+files_summary_size = 0
+
+
 # ファイルアクセスハンドラー
 with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHundler:
 
     # ルートディレクトリパス取得
-    fileAccessHundler.write( '###' + ' ' + dirpath + ' ' + '###' + '\n' )
+    fileAccessHundler.write( '###' + ' ' + 'T/D' + ': ' + dirpath + '\n' )
+    print( '>show filelist topdir ' + '\n' + dirpath + '\n')
+
+    # ファイル総数
+    fileAccessHundler.write( '###' + ' ' + 'Count' + ': ' + str( len(files) - 1 ) + '\n' )
+    print( '>show filelist counts ' + '\n' + str( len(files) - 1 ) + '\n')
+
+    # 空行
+    fileAccessHundler.write( '\n' )
 
     # すべての ファイル に対し
     for file in files:
+
         # ファイル名
         file_name = file.replace(dirpath, '')
 
@@ -100,11 +113,23 @@ with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHun
         if os.path.isdir(file):
             file_size = 0
 
+        # ファイルサイズ →→ ファイル総容量
+        files_summary_size += file_size
+
         # KB 表記
         file_size = str( file_size ) + 'KB'
 
         # 取得した ファイル名 一覧 を テキストファイル に 書き出し
         fileAccessHundler.write( file_name + "\t" + file_size + '\n' )
 
-
-print( "File count: " + str( len(files) - 1 ) )
+# テキストファイル 容量チェック
+print( '>show filelist check lastlog ' )
+print( 'Status           = ', end='' )
+if int( os.path.getsize(dirpath + '/' + listname) ) > 0:
+    print( 'Success' )
+else:
+    print( 'Failure' )
+print( 'Datetime         = ' + str( datetime.datetime.now() ) )
+print( 'List File name   = ' + listname )
+print( 'Target Directory = ' + dirpath )
+print( 'Directory size   = ' + str( int( files_summary_size / 1000 * 100 ) / 100 ) + ' KB' )
