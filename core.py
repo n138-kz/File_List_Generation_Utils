@@ -62,7 +62,7 @@ dirpath = os.getcwd()
 files = glob.glob(dirpath + '/**', recursive=True)
 
 # .で始まるファイルをリストに追加
-files.extend( glob.glob(dirpath + '/.**', recursive=True) )
+files.extend( glob.glob(dirpath + '/**/.**', recursive=True) )
 
 # 重複排除
 files = set(files)
@@ -74,10 +74,13 @@ files.sort()
 # ファイルアクセスハンドラー
 with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHundler:
 
+    # ルートディレクトリパス取得
+    fileAccessHundler.write( '###' + ' ' + dirpath + ' ' + '###' + '\n' )
+
     # すべての ファイル に対し
     for file in files:
         # ファイル名
-        file_name = file
+        file_name = file.replace(dirpath, '')
 
         # ファイルサイズ 取得→ KB 形式
         file_size = os.path.getsize(file) / 1000
@@ -89,7 +92,7 @@ with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHun
         if ( int(file_size) == 0 ):
             file_size = 0
 
-        # 0.01KB 未満だけど 0 byte 以上のときは 0.01KB にする
+        # 0.01KB 未満 だけど 0 byte 以上のときは 0.01KB にする
         if ( int(file_size)==0 ) and ( os.path.getsize(file) > 0 ):
             file_size = 0.01
 
@@ -100,6 +103,7 @@ with open(dirpath + '/' + listname, encoding='utf_8', mode='w') as fileAccessHun
         # KB 表記
         file_size = str( file_size ) + 'KB'
 
+        # 取得した ファイル名 一覧 を テキストファイル に 書き出し
         fileAccessHundler.write( file_name + "\t" + file_size + '\n' )
 
 
