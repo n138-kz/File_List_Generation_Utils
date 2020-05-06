@@ -1,4 +1,8 @@
 @echo off
 "C:\Users\yneon\AppData\Local\Programs\Python\Python38-32\Scripts\pyinstaller.exe" core.py -F --onefile --icon core.ico
+timeout 1
 
-timeout 10
+rmdir /S /Q __pycache__
+rmdir /S /Q build
+del /S /Q *.spec
+timeout 5
